@@ -6,8 +6,6 @@ use App\Entity\Guitar;
 
 interface GuitarRepositoryInterface
 {
-    public function find(int $id): ?Guitar;
-
-    public function findAll(): array;
-
+    public function find($id, $lockMode = null, $lockVersion = null): ?Guitar;
+    public function findAll();
 }

@@ -13,4 +13,14 @@ class InventoryRepository extends ServiceEntityRepository implements InventoryRe
     {
         parent::__construct($registry, Inventory::class);
     }
+
+    public function find($id, $lockMode = null, $lockVersion = null): ?Inventory
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
 }

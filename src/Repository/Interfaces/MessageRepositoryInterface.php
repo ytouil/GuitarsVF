@@ -6,8 +6,8 @@ use App\Entity\Message;
 
 interface MessageRepositoryInterface
 {
-    public function find(int $id): ?Message;
-
-    public function findAll(): array;
+    public function find($id, $lockMode = null, $lockVersion = null): ?Message;
+    public function findAll();
 }
+
 

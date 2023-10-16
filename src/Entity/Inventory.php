@@ -11,9 +11,10 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-#[Entity(repositoryClass: 'App\Repository\InventoryRepository')]
+#[Entity(repositoryClass: 'App\Repository\Implementations\InventoryRepository')]
 #[Table(name: 'inventory')]
 class Inventory
 {

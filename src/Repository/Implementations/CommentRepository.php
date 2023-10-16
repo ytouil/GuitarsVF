@@ -13,4 +13,14 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     {
         parent::__construct($registry, Comment::class);
     }
+
+    public function find($id, $lockMode = null, $lockVersion = null): ?Comment
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
+
 }

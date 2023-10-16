@@ -13,4 +13,14 @@ class GalleryRepository extends ServiceEntityRepository implements GalleryReposi
     {
         parent::__construct($registry, Gallery::class);
     }
+
+    public function find($id, $lockMode = null, $lockVersion = null): ?Gallery
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
 }

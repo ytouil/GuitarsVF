@@ -6,7 +6,6 @@ use App\Entity\Member;
 
 interface MemberRepositoryInterface
 {
-    public function find(int $id): ?Member;
-
-    public function findAll(): array;
+    public function find($id, $lockMode = null, $lockVersion = null): ?Member;
+    public function findAll();
 }

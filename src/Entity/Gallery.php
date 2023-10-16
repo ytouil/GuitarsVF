@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\GalleryRepository')]
+#[ORM\Entity(repositoryClass: 'App\Repository\Implementations\GalleryRepository')]
 class Gallery
 {
     #[ORM\Id]

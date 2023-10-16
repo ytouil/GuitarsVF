@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 
-#[Entity(repositoryClass: 'App\Repository\MemberRepository')]
+#[Entity(repositoryClass: 'App\Repository\Implementations\MemberRepository')]
 #[Table(name: 'member')]
 class Member
 {

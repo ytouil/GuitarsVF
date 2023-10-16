@@ -13,5 +13,15 @@ class MessageRepository extends ServiceEntityRepository implements MessageReposi
     {
         parent::__construct($registry, Message::class);
     }
+
+    public function find($id, $lockMode = null, $lockVersion = null): ?Message
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
 }
 

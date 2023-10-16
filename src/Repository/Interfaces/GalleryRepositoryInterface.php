@@ -6,8 +6,8 @@ use App\Entity\Gallery;
 
 interface GalleryRepositoryInterface
 {
-    public function find(int $id): ?Gallery;
-
-    public function findAll(): array;
+    public function find($id, $lockMode = null, $lockVersion = null): ?Gallery;
+    public function findAll();
 }
+
 
