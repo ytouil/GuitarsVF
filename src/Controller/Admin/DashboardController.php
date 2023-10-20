@@ -28,8 +28,6 @@ class DashboardController extends AbstractDashboardController
     {
         $url = $this->adminUrlGenerator->setController(MemberCrudController::class)->generateUrl();
         return $this->redirect($url);
-        // The rest of the commented code in this method is optional
-        // based on your requirements, so I'm keeping it as it is.
     }
 
     public function configureDashboard(): Dashboard
