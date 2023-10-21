@@ -23,6 +23,10 @@ class Gallery
     #[ORM\OneToMany(targetEntity: Guitar::class, mappedBy: 'gallery')]
     private $guitars;
 
+    // Adding the images attribute
+    #[ORM\Column(type: 'array', nullable: true)]
+    private array $images = [];
+
     public function __construct()
     {
         $this->guitars = new ArrayCollection();
@@ -74,6 +78,32 @@ class Gallery
     {
         if ($this->guitars->removeElement($guitar) && $guitar->getGallery() === $this) {
             $guitar->setGallery(null);
+        }
+
+        return $this;
+    }
+
+    // Getters and Setters for the images attribute
+    public function getImages(): array
+    {
+        return $this->images;
+    }
+
+    public function addImage(string $image): self
+    {
+        if (!in_array($image, $this->images, true)) {
+            $this->images[] = $image;
+        }
+
+        return $this;
+    }
+
+    public function removeImage(string $image): self
+    {
+        $index = array_search($image, $this->images, true);
+        if ($index !== false) {
+            unset($this->images[$index]);
+            $this->images = array_values($this->images);
         }
 
         return $this;

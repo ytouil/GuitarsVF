@@ -25,6 +25,9 @@ class Member
     private string $email;
 
     #[Column(type: 'string', length: 255)]
+    private string $password;
+
+    #[Column(type: 'string', length: 255)]
     private string $full_name;
 
     #[Column(type: 'text', nullable: true)]
@@ -32,6 +35,10 @@ class Member
 
     #[OneToOne(targetEntity: Inventory::class, mappedBy: 'member')]
     private $inventory;
+
+    // Adding the image attribute
+    #[Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image = null;
 
     public function __construct()
     {
@@ -51,6 +58,17 @@ class Member
     public function setEmail(string $email): self
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
         return $this;
     }
 
@@ -84,6 +102,18 @@ class Member
     public function setInventory(Inventory $inventory): self
     {
         $this->inventory = $inventory;
+        return $this;
+    }
+
+    // Getter and Setter for the image attribute
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
         return $this;
     }
 }

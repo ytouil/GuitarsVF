@@ -26,6 +26,10 @@ class Inventory
     #[Column(type: 'string', length: 255)]
     private string $name;
 
+    // Adding the image attribute
+    #[Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image = null;
+
     #[OneToOne(targetEntity: Member::class, inversedBy: 'inventory')]
     #[JoinColumn(name: 'member_id', referencedColumnName: 'id')]
     private $member;
@@ -89,6 +93,18 @@ class Inventory
             }
         }
 
+        return $this;
+    }
+
+    // Getter and Setter for the image attribute
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
         return $this;
     }
 }

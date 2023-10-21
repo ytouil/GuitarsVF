@@ -20,6 +20,10 @@ class Guitar
     #[ORM\Column(type: 'text')]
     private string $description;
 
+    // Adding the image attribute
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image = null;
+
     #[ORM\ManyToOne(targetEntity: Inventory::class, inversedBy: 'guitars')]
     private $inventory;
 
@@ -87,7 +91,7 @@ class Guitar
     {
         return $this->comments;
     }
-    
+
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
@@ -104,6 +108,18 @@ class Guitar
             $comment->setGuitar(null);
         }
 
+        return $this;
+    }
+
+    // Getter and Setter for the image attribute
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
         return $this;
     }
 }

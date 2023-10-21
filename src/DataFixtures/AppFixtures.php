@@ -16,29 +16,29 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         // Create members
-        $john = $this->createMember('john@example.com', 'John Doe', 'Bio about John');
-        $alice = $this->createMember('alice@example.com', 'Alice Smith', 'Bio about Alice');
+        $john = $this->createMember('john@example.com', 'John Doe', 'Bio about John', 'App/pictures/Members/john.jpg', '123456');
+        $alice = $this->createMember('alice@example.com', 'Alice Smith', 'Bio about Alice', 'App/pictures/Members/alice.jpg', '123456');
         
         $manager->persist($john);
         $manager->persist($alice);
 
         // Create Inventories
-        $johnInventory = $this->createInventory('John Inventory', $john);
-        $aliceInventory = $this->createInventory('Alice Inventory', $alice);
+        $johnInventory = $this->createInventory('John Inventory', $john, 'App/pictures/Inventories/john_inventory.jpg');
+        $aliceInventory = $this->createInventory('Alice Inventory', $alice, 'App/pictures/Inventories/alice_inventory.jpg');
 
         $manager->persist($johnInventory);
         $manager->persist($aliceInventory);
 
         // Create Galleries
-        $johnGallery = $this->createGallery('John Gallery', 'Description about John gallery');
-        $aliceGallery = $this->createGallery('Alice Gallery', 'Description about Alice gallery');
+        $johnGallery = $this->createGallery('John Gallery', 'Description about John gallery', ['App/pictures/Guitars/stratocaster.jpg', 'App/pictures/Inventories/john_inventory.jpg']);
+        $aliceGallery = $this->createGallery('Alice Gallery', 'Description about Alice gallery', ['App/pictures/Guitars/telecaster.jpg', 'App/pictures/Inventories/alice_inventory.jpg']);
 
         $manager->persist($johnGallery);
         $manager->persist($aliceGallery);
 
         // Create Guitars
-        $stratocaster = $this->createGuitar('Stratocaster', 'Description about Stratocaster', $johnInventory, $johnGallery);
-        $telecaster = $this->createGuitar('Telecaster', 'Description about Telecaster', $aliceInventory, $aliceGallery);
+        $stratocaster = $this->createGuitar('Stratocaster', 'Description about Stratocaster', $johnInventory, $johnGallery, 'App/pictures/Guitars/stratocaster.jpg');
+        $telecaster = $this->createGuitar('Telecaster', 'Description about Telecaster', $aliceInventory, $aliceGallery, 'App/pictures/Guitars/telecaster.jpg');
 
         $manager->persist($stratocaster);
         $manager->persist($telecaster);
@@ -60,41 +60,48 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function createMember(string $email, string $fullName, string $bio): Member
+    private function createMember(string $email, string $fullName, string $bio, string $imagePath, string $password): Member
     {
         $member = new Member();
         $member->setEmail($email);
         $member->setFullName($fullName);
         $member->setBio($bio);
+        $member->setImage($imagePath);
+        $member->setPassword($password); // Setting the password
 
         return $member;
     }
 
-    private function createInventory(string $name, Member $member): Inventory
+    private function createInventory(string $name, Member $member, string $imagePath): Inventory
     {
         $inventory = new Inventory();
         $inventory->setName($name);
         $inventory->setMember($member);
+        $inventory->setImage($imagePath);
 
         return $inventory;
     }
 
-    private function createGallery(string $name, string $description): Gallery
+    private function createGallery(string $name, string $description, array $imagePaths): Gallery
     {
         $gallery = new Gallery();
         $gallery->setName($name);
         $gallery->setDescription($description);
+        foreach ($imagePaths as $path) {
+            $gallery->addImage($path);
+        }
 
         return $gallery;
     }
 
-    private function createGuitar(string $modelName, string $description, Inventory $inventory, Gallery $gallery): Guitar
+    private function createGuitar(string $modelName, string $description, Inventory $inventory, Gallery $gallery, string $imagePath): Guitar
     {
         $guitar = new Guitar();
         $guitar->setModelName($modelName);
         $guitar->setDescription($description);
         $guitar->setInventory($inventory);
         $guitar->setGallery($gallery);
+        $guitar->setImage($imagePath);
 
         return $guitar;
     }
