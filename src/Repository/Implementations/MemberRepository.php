@@ -23,4 +23,17 @@ class MemberRepository extends ServiceEntityRepository implements MemberReposito
     {
         return parent::findAll();
     }
+
+    // Added method to save a member entity
+    public function save(Member $member): void
+    {
+        $this->_em->persist($member);
+        $this->_em->flush();
+    }
+
+    // Added method to find a member by email
+    public function findByEmail(string $email): ?Member
+    {
+        return $this->findOneBy(['email' => $email]);
+    }
 }
