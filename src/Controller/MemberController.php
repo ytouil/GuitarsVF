@@ -18,13 +18,13 @@ class MemberController extends AbstractController
     #[Route('/register', name: 'show_registration_form', methods: ['GET'])]
     public function showRegistrationForm(): Response
     {
-        return $this->render('register.html.twig');  // Assuming you've created this Twig template.
+        return $this->render('register.html.twig'); 
     }
 
     #[Route('/login', name: 'show_login_form', methods: ['GET'])]
     public function showLoginForm(): Response
     {
-        return $this->render('login.html.twig');  // Assuming you've created this Twig template.
+        return $this->render('login.html.twig');  
     }
 
     #[Route('/register', name: 'register_member', methods: ['POST'])]
