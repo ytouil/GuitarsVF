@@ -26,6 +26,21 @@ class Gallery
     // Adding the images attribute
     #[ORM\Column(type: 'array', nullable: true)]
     private array $images = [];
+    #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'galleries')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Member $member;
+
+    // Getter and setter for member
+    public function getMember(): Member
+    {
+        return $this->member;
+    }
+
+    public function setMember(Member $member): self
+    {
+        $this->member = $member;
+        return $this;
+    }
 
     public function __construct()
     {
