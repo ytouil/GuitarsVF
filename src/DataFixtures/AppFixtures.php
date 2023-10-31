@@ -29,9 +29,9 @@ class AppFixtures extends Fixture
         $manager->persist($johnInventory);
         $manager->persist($aliceInventory);
 
-        // Create Galleries
-        $johnGallery = $this->createGallery('John Gallery', 'Description about John gallery', ['App/pictures/Guitars/stratocaster.jpg', 'App/pictures/Inventories/john_inventory.jpg']);
-        $aliceGallery = $this->createGallery('Alice Gallery', 'Description about Alice gallery', ['App/pictures/Guitars/telecaster.jpg', 'App/pictures/Inventories/alice_inventory.jpg']);
+        // Create Galleries and associate them with Members
+        $johnGallery = $this->createGallery('John Gallery', 'Description about John gallery', ['App/pictures/Guitars/stratocaster.jpg', 'App/pictures/Inventories/john_inventory.jpg'], $john);
+        $aliceGallery = $this->createGallery('Alice Gallery', 'Description about Alice gallery', ['App/pictures/Guitars/telecaster.jpg', 'App/pictures/Inventories/alice_inventory.jpg'], $alice);
 
         $manager->persist($johnGallery);
         $manager->persist($aliceGallery);
@@ -67,7 +67,7 @@ class AppFixtures extends Fixture
         $member->setFullName($fullName);
         $member->setBio($bio);
         $member->setImage($imagePath);
-        $member->setPassword($password); // Setting the password
+        $member->setPassword($password);
 
         return $member;
     }
@@ -82,7 +82,7 @@ class AppFixtures extends Fixture
         return $inventory;
     }
 
-    private function createGallery(string $name, string $description, array $imagePaths): Gallery
+    private function createGallery(string $name, string $description, array $imagePaths, Member $member): Gallery
     {
         $gallery = new Gallery();
         $gallery->setName($name);
@@ -90,6 +90,7 @@ class AppFixtures extends Fixture
         foreach ($imagePaths as $path) {
             $gallery->addImage($path);
         }
+        $gallery->setMember($member);
 
         return $gallery;
     }

@@ -40,9 +40,12 @@ class Member
     #[Column(type: 'string', length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[OneToMany(targetEntity: Gallery::class, mappedBy: 'member')]
+    private $galleries;
+
     public function __construct()
     {
-        // Initialize any collections
+        $this->galleries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +117,29 @@ class Member
     public function setImage(?string $image): self
     {
         $this->image = $image;
+        return $this;
+    }
+    public function getGalleries(): Collection
+    {
+        return $this->galleries;
+    }
+
+    public function addGallery(Gallery $gallery): self
+    {
+        if (!$this->galleries->contains($gallery)) {
+            $this->galleries[] = $gallery;
+            $gallery->setMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGallery(Gallery $gallery): self
+    {
+        if ($this->galleries->removeElement($gallery) && $gallery->getMember() === $this) {
+            $gallery->setMember(null);
+        }
+
         return $this;
     }
 }
