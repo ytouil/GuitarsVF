@@ -33,8 +33,9 @@ class Member
     #[Column(type: 'text', nullable: true)]
     private ?string $bio;
 
-    #[OneToOne(targetEntity: Inventory::class, mappedBy: 'member')]
-    private $inventory;
+    #[OneToOne(targetEntity: Inventory::class, mappedBy: 'member', cascade: ['persist'])]
+    private ?Inventory $inventory;    
+
 
     // Adding the image attribute
     #[Column(type: 'string', length: 255, nullable: true)]
@@ -46,7 +47,13 @@ class Member
     public function __construct()
     {
         $this->galleries = new ArrayCollection();
+        // Create a new Inventory instance by default
+        $this->inventory = new Inventory();
+        $this->inventory->setName('Default Inventory');
+        // Set the back-reference from Inventory to this Member
+        $this->inventory->setMember($this);
     }
+    
 
     public function getId(): ?int
     {

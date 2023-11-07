@@ -66,8 +66,11 @@ class Inventory
     public function setMember(Member $member): self
     {
         $this->member = $member;
+        // Don't need to set the inventory on the member if it's already done in the Member's constructor
         return $this;
     }
+    
+    
 
     public function getGuitars(): Collection
     {
