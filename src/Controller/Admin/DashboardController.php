@@ -14,6 +14,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 class DashboardController extends AbstractDashboardController
 {
@@ -23,7 +25,8 @@ class DashboardController extends AbstractDashboardController
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
     }
-    #[Route('/admin')]
+    //#[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
         $url = $this->adminUrlGenerator->setController(MemberCrudController::class)->generateUrl();

@@ -22,7 +22,7 @@ class MemberService implements MemberServiceInterface
         $member->setFullName($data['full_name']);
         $member->setBio($data['bio'] ?? null);
         $member->setImage($data['image'] ?? null);
-
+        $member->setRoles(['ROLE_USER']);
         // Hash the password using PHP's password_hash() function
         $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
         $member->setPassword($hashedPassword);

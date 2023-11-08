@@ -36,6 +36,7 @@ class MemberRepository extends ServiceEntityRepository implements MemberReposito
             
             // Then, persist the Member; the Inventory is already set in the Member's constructor
             $this->_em->persist($member);
+            $this->_em->flush();
            
             
             

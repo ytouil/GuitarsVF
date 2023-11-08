@@ -36,6 +36,9 @@ class Member
     #[OneToOne(targetEntity: Inventory::class, mappedBy: 'member', cascade: ['persist'])]
     private ?Inventory $inventory;    
 
+    #[Column(type: 'json')]
+    private array $roles = [];
+
 
     // Adding the image attribute
     #[Column(type: 'string', length: 255, nullable: true)]
@@ -52,6 +55,7 @@ class Member
         $this->inventory->setName('Default Inventory');
         // Set the back-reference from Inventory to this Member
         $this->inventory->setMember($this);
+        $this->roles = ['ROLE_USER'];
     }
     
 
@@ -129,6 +133,25 @@ class Member
     public function getGalleries(): Collection
     {
         return $this->galleries;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->getRoles(), true);
     }
 
     public function addGallery(Gallery $gallery): self
