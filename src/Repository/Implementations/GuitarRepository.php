@@ -3,6 +3,7 @@
 namespace App\Repository\Implementations;
 
 use App\Entity\Guitar;
+use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\Interfaces\GuitarRepositoryInterface;
@@ -22,5 +23,15 @@ class GuitarRepository extends ServiceEntityRepository implements GuitarReposito
     public function findAll(): array
     {
         return parent::findAll();
+    }
+
+    public function findByUser(Member $member)
+    {
+        return $this->createQueryBuilder('g')
+            ->join('g.inventory', 'i')
+            ->where('i.member = :member')
+            ->setParameter('member', $member)
+            ->getQuery()
+            ->getResult();
     }
 }

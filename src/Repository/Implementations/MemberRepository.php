@@ -31,22 +31,25 @@ class MemberRepository extends ServiceEntityRepository implements MemberReposito
     {
         $this->_em->beginTransaction();
         try {
-            // Persist the Inventory first
-            $this->_em->persist($member->getInventory());
-            
-            // Then, persist the Member; the Inventory is already set in the Member's constructor
+            // Check if the Member already has an Inventory
+            if (null === $member->getInventory()) {
+                // If not, create and set a new Inventory
+                $inventory = new Inventory();
+                $inventory->setName('Default Inventory');
+                $inventory->setMember($member);
+                $member->setInventory($inventory);
+
+                // Persist the new Inventory
+                $this->_em->persist($inventory);
+            }
+
+            // Then, persist the Member
             $this->_em->persist($member);
             $this->_em->flush();
-           
-            
-            
             $this->_em->commit();
         } catch (\Throwable $e) {
             $this->_em->rollback();
-            // Log the exception details
-            error_log($e->getMessage());
-            error_log($e->getTraceAsString());
-            // Optionally, rethrow the exception to handle it further up the call stack
+            // Log and/or handle the exception as before
             throw new \RuntimeException("Unable to save member data: " . $e->getMessage(), 0, $e);
         }
     }
@@ -54,7 +57,6 @@ class MemberRepository extends ServiceEntityRepository implements MemberReposito
 
     public function findByEmail(string $email): ?Member
     {
-        // Assuming you're simply returning the result without additional logic
         return $this->findOneBy(['email' => $email]);
     }
 }

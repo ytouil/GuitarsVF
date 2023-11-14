@@ -19,6 +19,14 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
+    App\Security\JWTTokenListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 10 }
+    App\Security\RoleBasedRedirectionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
+    App\Security\LogOutListener:
+        tags:
+            - { name: kernel.event_listener, event: 'Symfony\Component\Security\Http\Event\LogoutEvent' }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

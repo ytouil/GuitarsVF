@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
+        <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+            <ul class="space-y-2 font-medium">
+                <li>
+                    <a href="{{ path('member_profil') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="fab fa-symfony"></i>
+                        <span class="ms-3">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_gallery_index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <span class="flex-1 ms-3 whitespace-nowrap">Gallery</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_guitar_index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <span class="flex-1 ms-3 whitespace-nowrap">Guitars</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <div class="p-4 sm:ml-64">
+        <div class="p-4 mt-14">
+            {% block content %}
+                <div class="mx-4 py-6 sm:mx-auto sm:px-6 lg:px-8">
+                    <div class="flex space-x-4">
+                        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-8">
+                            <div class="bg-white p-5">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="text-center sm:mt-0 sm:ml-2 sm:text-left">
+                                        <h3 class="text-sm leading-6 font-medium text-gray-400">Total Guitars</h3>
+                                        <p class="text-3xl font-bold text-black">{{ app.user.inventory.guitars.count}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow transform transition-all mb-4 w-full sm:w-1/3 sm:my-8">
+                            <div class="bg-white p-5">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="text-center sm:mt-0 sm:ml-2 sm:text-left">
+                                        <h3 class="text-sm leading-6 font-medium text-gray-400">Total Galleries</h3>
+                                        <p class="text-3xl font-bold text-black">{{ app.user.galleries.count }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>            {% endblock %}
+        </div>
+    </div>
+
+
+{% endblock %}

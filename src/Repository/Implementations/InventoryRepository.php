@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Implementations;
 
 use App\Entity\Inventory;
+use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\Interfaces\InventoryRepositoryInterface;
 
@@ -22,5 +24,17 @@ class InventoryRepository extends ServiceEntityRepository implements InventoryRe
     public function findAll(): array
     {
         return parent::findAll();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findByUser(Member $user)
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.member = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

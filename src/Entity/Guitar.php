@@ -5,7 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: 'App\Repository\Implementations\GuitarRepository')]
 class Guitar
 {
@@ -21,16 +24,23 @@ class Guitar
     private string $description;
 
     // Adding the image attribute
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $image = null;
+    #[Vich\UploadableField(mapping: 'guitar_images', fileNameProperty: 'imageName')]
+    private ?File $image = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Inventory::class, inversedBy: 'guitars')]
-    private $inventory;
+    #[ORM\JoinColumn(nullable: false)]
+    private Inventory $inventory;
 
     #[ORM\ManyToOne(targetEntity: Gallery::class, inversedBy: 'guitars')]
-    private $gallery;
+    private ?Gallery $gallery;
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'guitar')]
+    #[ORM\OneToMany(mappedBy: 'guitar', targetEntity: Comment::class)]
     private $comments;
 
     public function __construct()
@@ -112,14 +122,31 @@ class Guitar
     }
 
     // Getter and Setter for the image attribute
-    public function getImage(): ?string
+    public function getImage(): ?File
     {
         return $this->image;
     }
 
-    public function setImage(?string $image): self
+    public function setImage(?File $image = null): void
     {
         $this->image = $image;
-        return $this;
+        if (null !== $image) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+
+
 }

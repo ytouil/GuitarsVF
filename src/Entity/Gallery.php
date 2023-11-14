@@ -20,12 +20,13 @@ class Gallery
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description;
 
-    #[ORM\OneToMany(targetEntity: Guitar::class, mappedBy: 'gallery')]
+    #[ORM\OneToMany(mappedBy: 'gallery', targetEntity: Guitar::class)]
     private $guitars;
 
     // Adding the images attribute
-    #[ORM\Column(type: 'array', nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private array $images = [];
+
     #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'galleries')]
     #[ORM\JoinColumn(nullable: false)]
     private Member $member;

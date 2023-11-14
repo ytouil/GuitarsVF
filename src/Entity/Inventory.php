@@ -30,11 +30,11 @@ class Inventory
     #[Column(type: 'string', length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[OneToOne(targetEntity: Member::class, inversedBy: 'inventory')]
+    #[OneToOne(inversedBy: 'inventory', targetEntity: Member::class)]
     #[JoinColumn(name: 'member_id', referencedColumnName: 'id')]
     private $member;
 
-    #[OneToMany(targetEntity: Guitar::class, mappedBy: 'inventory')]
+    #[OneToMany(mappedBy: 'inventory', targetEntity: Guitar::class)]
     private $guitars;
 
     public function __construct()
@@ -66,7 +66,6 @@ class Inventory
     public function setMember(Member $member): self
     {
         $this->member = $member;
-        // Don't need to set the inventory on the member if it's already done in the Member's constructor
         return $this;
     }
     

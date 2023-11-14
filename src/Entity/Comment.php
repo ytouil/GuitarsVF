@@ -19,10 +19,10 @@ class Comment
     private \DateTimeInterface $timestamp;
 
     #[ORM\ManyToOne(targetEntity: Guitar::class, inversedBy: 'comments')]
-    private $guitar;
+    private Guitar $guitar;
 
     #[ORM\ManyToOne(targetEntity: Member::class, inversedBy: 'comments')]
-    private $member;
+    private Member $member;
 
     public function getId(): int
     {

@@ -4,58 +4,55 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\OneToMany;
-use Doctrine\ORM\Mapping\OneToOne;
-
-#[Entity(repositoryClass: 'App\Repository\Implementations\MemberRepository')]
-#[Table(name: 'member')]
-class Member
-{
-    #[Id]
-    #[GeneratedValue]
-    #[Column(type: 'integer')]
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+#[Vich\Uploadable]
+#[ORM\Entity(repositoryClass: 'App\Repository\Implementations\MemberRepository')]
+#[ORM\Table(name: 'member')]
+class Member implements UserInterface, PasswordAuthenticatedUserInterface {
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $email;
 
-    #[Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $password;
 
-    #[Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $full_name;
 
-    #[Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $bio;
 
-    #[OneToOne(targetEntity: Inventory::class, mappedBy: 'member', cascade: ['persist'])]
-    private ?Inventory $inventory;    
+    #[ORM\OneToOne(mappedBy: 'member', targetEntity: Inventory::class, cascade: ['persist'])]
+    private $inventory;
 
-    #[Column(type: 'json')]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
 
     // Adding the image attribute
-    #[Column(type: 'string', length: 255, nullable: true)]
-    private ?string $image = null;
+    #[Vich\UploadableField(mapping: 'member_images', fileNameProperty: 'imageName')]
+    private ?File $image = null;
 
-    #[OneToMany(targetEntity: Gallery::class, mappedBy: 'member')]
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'member', targetEntity: Gallery::class)]
     private $galleries;
 
     public function __construct()
     {
         $this->galleries = new ArrayCollection();
-        // Create a new Inventory instance by default
-        $this->inventory = new Inventory();
-        $this->inventory->setName('Default Inventory');
-        // Set the back-reference from Inventory to this Member
-        $this->inventory->setMember($this);
-        $this->roles = ['ROLE_USER'];
     }
     
 
@@ -120,15 +117,29 @@ class Member
     }
 
     // Getter and Setter for the image attribute
-    public function getImage(): ?string
+    public function getImage(): ?File
     {
         return $this->image;
     }
 
-    public function setImage(?string $image): self
+    public function setImage(?File $image = null): void
     {
         $this->image = $image;
-        return $this;
+        if (null !== $image) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
     }
     public function getGalleries(): Collection
     {
@@ -144,8 +155,6 @@ class Member
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
@@ -160,7 +169,6 @@ class Member
             $this->galleries[] = $gallery;
             $gallery->setMember($this);
         }
-
         return $this;
     }
 
@@ -169,7 +177,27 @@ class Member
         if ($this->galleries->removeElement($gallery) && $gallery->getMember() === $this) {
             $gallery->setMember(null);
         }
-
         return $this;
     }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getUsername();
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->email;
+    }
+
+
 }

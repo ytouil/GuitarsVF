@@ -19,10 +19,10 @@ class Message
     private \DateTimeInterface $timestamp;
 
     #[ORM\ManyToOne(targetEntity: Member::class)]
-    private $sender;
+    private Member $sender;
 
     #[ORM\ManyToOne(targetEntity: Member::class)]
-    private $receiver;
+    private Member $receiver;
 
     public function getId(): int
     {

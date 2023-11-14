@@ -10,6 +10,7 @@ use App\Entity\Member;
 use App\Entity\Message;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Vich\UploaderBundle\Entity\File;
 
 class AppFixtures extends Fixture
 {
@@ -102,7 +103,10 @@ class AppFixtures extends Fixture
         $guitar->setDescription($description);
         $guitar->setInventory($inventory);
         $guitar->setGallery($gallery);
-        $guitar->setImage($imagePath);
+        if (file_exists($imagePath)) {
+            $file = new File($imagePath);
+            $guitar->setImage($file);
+        }
 
         return $guitar;
     }
