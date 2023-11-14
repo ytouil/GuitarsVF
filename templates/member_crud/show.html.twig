@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Member{% endblock %}
+
+{% block body %}
+    <h1>Member</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ member.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ member.email }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ member.password }}</td>
+            </tr>
+            <tr>
+                <th>Full_name</th>
+                <td>{{ member.fullName }}</td>
+            </tr>
+            <tr>
+                <th>Bio</th>
+                <td>{{ member.bio }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ member.roles ? member.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>ImageName</th>
+                <td>{{ member.imageName }}</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_member_crud_index') }}">back to list</a>
+
+    <a href="{{ path('app_member_crud_edit', {'id': member.id}) }}">edit</a>
+
+    {{ include('member_crud/_delete_form.html.twig') }}
+{% endblock %}

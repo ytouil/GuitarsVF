@@ -1,0 +1,14 @@
+vich_uploader:
+    db_driver: orm
+    metadata:
+        type: attribute
+
+    mappings:
+        guitar_images:
+            uri_prefix: /assets/uploads
+            upload_destination: '%kernel.project_dir%/public/assets/uploads'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+        member_images:
+            uri_prefix: /assets/uploads/member
+            upload_destination: '%kernel.project_dir%/public/assets/uploads/member'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

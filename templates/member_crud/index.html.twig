@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Member index{% endblock %}
+
+{% block body %}
+    <h1>Member index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Full_name</th>
+                <th>Bio</th>
+                <th>Roles</th>
+                <th>ImageName</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for member in members %}
+            <tr>
+                <td>{{ member.id }}</td>
+                <td>{{ member.email }}</td>
+                <td>{{ member.password }}</td>
+                <td>{{ member.fullName }}</td>
+                <td>{{ member.bio }}</td>
+                <td>{{ member.roles ? member.roles|json_encode : '' }}</td>
+                <td>{{ member.imageName }}</td>
+                <td>
+                    <a href="{{ path('app_member_crud_show', {'id': member.id}) }}">show</a>
+                    <a href="{{ path('app_member_crud_edit', {'id': member.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_member_crud_new') }}">Create new</a>
+{% endblock %}

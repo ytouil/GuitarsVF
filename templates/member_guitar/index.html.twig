@@ -1,0 +1,71 @@
+
+{% extends 'member/index.html.twig' %}
+{% block content %}
+    <div class="flex justify-end">
+        <a href="{{ path('app_guitar_new') }}" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+            Add Guitar
+        </a>
+    </div>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+            <th scope="col" class="px-6 py-3">
+                Model Name
+            </th>
+            <th scope="col" class="px-6 py-3">
+                    Description
+            </th>
+            <th scope="col" class="px-6 py-3">
+                    Image
+            </th>
+            <th scope="col" class="px-6 py-3">
+                Gallery
+            </th>
+            <th scope="col" class="px-6 py-3">
+                Actions
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for guitar in guitars %}
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                {{ guitar.modelName }}
+            </th>
+            <td class="px-6 py-4">
+                {{ guitar.description }}
+            </td>
+            <td class="px-6 py-4">
+                <img class="w-10 h-10" src="{{ vich_uploader_asset(guitar, 'image') }}">
+            </td>
+            <td class="px-6 py-4">
+                <form id="add-to-gallery-form-{{ guitar.id }}" action="{{ path('add_guitar_to_gallery', {'id': guitar.id}) }}" method="post">
+                    <select name="galleryId" class="rounded-md border-gray-300 mr-2" onchange="document.getElementById('add-to-gallery-form-{{ guitar.id }}').submit();">
+                        <option value="">Select Gallery</option>
+                        {% for gallery in galleries %}
+                            <option value="">Private</option>
+                            <option value="{{ gallery.id }}">{{ gallery.name }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </td>
+            <td class="flex px-6 py-4 p-5 justify-end text-right">
+                <a href="{{ path('app_guitar_edit', {'id': guitar.id}) }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</a>
+                <form action="{{ path('app_guitar_delete', {'id': guitar.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this guitar?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ guitar.id) }}">
+                    <button type="submit" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center text-lg font-bold py-24">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
