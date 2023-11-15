@@ -11,6 +11,7 @@ use App\Entity\Message;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AppFixtures extends Fixture
@@ -18,9 +19,10 @@ class AppFixtures extends Fixture
 
 public function load(ObjectManager $manager)
 {
+    $sourceDir = 'public/assets/dummyImages/';
+    $targetDir = 'public/assets/uploads/';
+
 // Create Users
-
-
     $admin = new User();
     $admin->setEmail('admin@gmail.com');
     $admin->setPassword(password_hash('123456', PASSWORD_DEFAULT));
@@ -45,47 +47,35 @@ $manager->persist($aliceUser);
     $adminMember->setFullName('Admin');
     $adminMember->setBio('Bio about admin');
     $adminMember->setUser($admin);
-    $dummyImagePath = 'public/assets/dummyImages/5.webp';
-    $dummyImage = new UploadedFile(
-        $dummyImagePath,
-        '5.webp',
-        'image/webp',
-        null,
-        true // Mark as test file
-    );
-    $adminMember->setImage($dummyImage);
-    $adminMember->setImageName('5.webp');
+    $imageName = '4.webp';
+    if (copy($sourceDir . $imageName, $targetDir . $imageName)) {
+        $file = new File($targetDir . $imageName);
+        $adminMember->setImage($file);
+        $adminMember->setImageName($imageName);
+    }
 
 
 $johnMember = new Member();
 $johnMember->setFullName('John Doe');
 $johnMember->setBio('Bio about John');
 $johnMember->setUser($johnUser);
-$dummyImagePath = 'public/assets/dummyImages/7.webp';
-$dummyImage = new UploadedFile(
-$dummyImagePath,
-        '7.webp',
-        'image/webp',
-        null,
-        true // Mark as test file
-    );
-$johnMember->setImage($dummyImage);
-$johnMember->setImageName('7.webp');
+    $imageName = '7.webp';
+    if (copy($sourceDir . $imageName, $targetDir . $imageName)) {
+        $file = new File($targetDir . $imageName);
+        $adminMember->setImage($file);
+        $adminMember->setImageName($imageName);
+    }
 
 $aliceMember = new Member();
 $aliceMember->setFullName('Alice Smith');
 $aliceMember->setBio('Bio about Alice');
 $aliceMember->setUser($aliceUser);
-$dummyImagePath = 'public/assets/dummyImages/8.jpg';
-$dummyImage = new UploadedFile(
-        $dummyImagePath,
-        '8.jpg',
-        'image/jpeg',
-        null,
-        true // Mark as test file
-    );
-$aliceMember->setImage($dummyImage);
-$aliceMember->setImageName('image.jpg');
+    $imageName = '8.jpg';
+    if (copy($sourceDir . $imageName, $targetDir . $imageName)) {
+        $file = new File($targetDir . $imageName);
+        $adminMember->setImage($file);
+        $adminMember->setImageName($imageName);
+    }
 
 $manager->persist($adminMember);
 $manager->persist($johnMember);
@@ -109,31 +99,23 @@ $guitar1 = new Guitar();
 $guitar1->setModelName('Stratocaster');
 $guitar1->setDescription('Description about Stratocaster');
 $guitar1->setInventory($johnInventory);
-    $dummyImagePath = 'public/assets/dummyImages/1.webp';
-    $dummyImage = new UploadedFile(
-        $dummyImagePath,
-        '1.webp',
-        'image/webp',
-        null,
-        true // Mark as test file
-    );
-    $guitar1->setImage($dummyImage);
-    $guitar1->setImageName('1.webp');
+    $imageName = '1.webp';
+    if (copy($sourceDir . $imageName, $targetDir . $imageName)) {
+        $file = new File($targetDir . $imageName);
+        $adminMember->setImage($file);
+        $adminMember->setImageName($imageName);
+    }
 
 $guitar2 = new Guitar();
 $guitar2->setModelName('Telecaster');
 $guitar2->setDescription('Description about Telecaster');
 $guitar2->setInventory($aliceInventory);
-    $dummyImagePath = 'public/assets/dummyImages/2.webp';
-    $dummyImage = new UploadedFile(
-        $dummyImagePath,
-        '2.webp',
-        'image/webp',
-        null,
-        true // Mark as test file
-    );
-    $guitar2->setImage($dummyImage);
-    $guitar2->setImageName('2.webp');
+    $imageName = '2.webp';
+    if (copy($sourceDir . $imageName, $targetDir . $imageName)) {
+        $file = new File($targetDir . $imageName);
+        $adminMember->setImage($file);
+        $adminMember->setImageName($imageName);
+    }
 
 $manager->persist($guitar1);
 $manager->persist($guitar2);
@@ -144,32 +126,24 @@ $johnGallery->setName('John Gallery');
 $johnGallery->setDescription('Gallery belonging to John');
 $johnGallery->setMember($johnMember);
 $johnGallery->addGuitar($guitar1);
-    $dummyImagePath = 'public/assets/dummyImages/9.webp';
-    $dummyImage = new UploadedFile(
-        $dummyImagePath,
-        '9.webp',
-        'image/webp',
-        null,
-        true // Mark as test file
-    );
-    $johnGallery->setImage($dummyImage);
-    $johnGallery->setImageName('9.webp');
+    $imageName = '9.webp';
+    if (copy($sourceDir . $imageName, $targetDir . $imageName)) {
+        $file = new File($targetDir . $imageName);
+        $adminMember->setImage($file);
+        $adminMember->setImageName($imageName);
+    }
 
 $aliceGallery = new Gallery();
 $aliceGallery->setName('Alice Gallery');
 $aliceGallery->setDescription('Gallery belonging to Alice');
 $aliceGallery->setMember($aliceMember);
 $aliceGallery->addGuitar($guitar2);
-    $dummyImagePath = 'public/assets/dummyImages/10.webp';
-    $dummyImage = new UploadedFile(
-        $dummyImagePath,
-        '10.webp',
-        'image/webp',
-        null,
-        true // Mark as test file
-    );
-    $aliceGallery->setImage($dummyImage);
-    $aliceGallery->setImageName('10.webp');
+    $imageName = '10.webp';
+    if (copy($sourceDir . $imageName, $targetDir . $imageName)) {
+        $file = new File($targetDir . $imageName);
+        $adminMember->setImage($file);
+        $adminMember->setImageName($imageName);
+    }
 
 $manager->persist($johnGallery);
 $manager->persist($aliceGallery);
