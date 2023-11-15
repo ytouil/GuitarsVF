@@ -2,24 +2,25 @@
     <nav class="relative fixed w-full bg-white border-gray-200 px-4 lg:px-6 py-2.5 z-50 dark:bg-gray-800">
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
             <a href="{{ path('home_app') }}" class="flex items-center">
-                <img src="{{ asset('assets/images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo" />
+                <img src="{{ asset('assets/images/logo.png') }}" class="mr-3 h-6 sm:h-9" alt="logo" />
                 <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Guitar</span>
             </a>
             <div class="flex items-center lg:order-2">
                 {% if app.user %}
-
                     <div class="flex items-center">
                         <div class="relative flex items-center ms-3">
                             <div>
                                 <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                     <span class="sr-only">Open user menu</span>
-                                    <img class="w-8 h-8 rounded-full" src="{{ vich_uploader_asset(app.user, 'image') }}" alt="user photo">
+                                    <img class="w-8 h-8 rounded-full"
+                                         src="{{ app.user.member.imageName ? vich_uploader_asset(app.user.member, 'image') : asset('assets/images/avarat.webp') }}"
+                                         alt="user photo">
                                 </button>
                             </div>
                             <div class="absolute top-full right-0 z-60 hidden my-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                                 <div class="px-4 py-3" role="none">
                                     <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                        {{ app.user.fullName }}
+                                        {{ app.user.member.fullName }}
                                     </p>
                                     <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                                         {{ app.user.email }}
@@ -27,7 +28,10 @@
                                 </div>
                                 <ul class="py-1" role="none">
                                     <li>
-                                        <a href="{{path('member_profil')}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
+                                        <a href="{{path('user_profile')}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Profile</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('user_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
                                     </li>
                                     <li>
                                         <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
@@ -38,16 +42,11 @@
                     </div>
                 {% else %}
                     <a href="{{ path('show_login_form') }}" class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Log in</a>
-
-
             </div>
             <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                     <li>
                         <a href="{{ path('home_app') }}" class="block py-2 pr-4 pl-3 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Home</a>
-                    </li>
-                    <li>
-                        <a href="#" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Company</a>
                     </li>
                 </ul>
             </div>

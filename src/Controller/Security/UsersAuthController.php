@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller\Auth;
+namespace App\Controller\Security;
 
 use App\Form\Auth\LoginFormType;
 use App\Form\Auth\RegistrationFormType;
-use App\Service\Interfaces\MemberServiceInterface;
+use App\Service\Interfaces\UserServiceInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -19,14 +19,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 class UsersAuthController extends AbstractController
 {
     private SerializerInterface $serializer;
-    private MemberServiceInterface $memberService;
+    private UserServiceInterface $memberService;
     private $authorizationChecker;
     private JWTTokenManagerInterface $JWTTokenManager;
 
     public function __construct(
-        JWTTokenManagerInterface $JWTTokenManager,
-        SerializerInterface $serializer,
-        MemberServiceInterface $memberService,
+        JWTTokenManagerInterface      $JWTTokenManager,
+        SerializerInterface           $serializer,
+        UserServiceInterface          $memberService,
         AuthorizationCheckerInterface $authorizationChecker) {
         $this->memberService = $memberService;
         $this->serializer = $serializer;
@@ -81,12 +81,7 @@ class UsersAuthController extends AbstractController
 private function processValidForm($form): Response {
     $data = $form->getData();
     try {
-
-        $member = $this->memberService->registerMember($data);
-        $context = $this->createSerializationContext();
-
-        $jsonMember = $this->serializer->serialize($member, 'json', $context);
-
+        $this->memberService->registerMember($data);
         return $this->redirectToRoute('show_login_form');
     } catch (\Exception $e) {
         $this->addFlash('error', $e->getMessage());
@@ -99,7 +94,6 @@ private function processValidLoginForm($form): Response{
     $data = $form->getData();
     $member = $this->memberService->authenticateMember($data['email'], $data['password']);
     if ($member) {
-        $context = $this->createSerializationContext();
         $jwtToken = $this->JWTTokenManager->create($member);
         $cookie = new Cookie(
             'JWT',               // Cookie name
@@ -130,11 +124,11 @@ private function processValidLoginForm($form): Response{
         if (in_array('ROLE_ADMIN', $role)) {
             return $this->redirectToRoute('admin');
         } elseif (in_array('ROLE_USER', $role)) {
-            return $this->redirectToRoute('member_profil');
+            return $this->redirectToRoute('user_dashboard');
         }
 
         // Default redirect if role is not matched
-        return $this->redirectToRoute('error');
+        return $this->redirectToRoute('home_app');
     }
 
 

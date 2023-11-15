@@ -10,7 +10,7 @@ security:
         #users_in_memory: { memory: null }
         app_user_provider:
             entity:
-                class: App\Entity\Member
+                class: App\Entity\User
                 property: email
     firewalls:
         login:
@@ -47,3 +47,4 @@ security:
         - { path: /, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/dashboard, roles: ROLE_USER }
+        - { path: ^/profile, roles: ROLE_USER }

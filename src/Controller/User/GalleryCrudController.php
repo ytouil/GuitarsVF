@@ -4,8 +4,10 @@ namespace App\Controller\User;
 
 use App\Entity\Gallery;
 use App\Entity\Member;
+use App\Entity\User;
 use App\Form\GalleryType;
 use App\Repository\Interfaces\GalleryRepositoryInterface;
+use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -29,7 +31,7 @@ class GalleryCrudController extends AbstractController
     public function index(GalleryRepositoryInterface $galleryRepository): Response
     {
         $user = $this->security->getUser();
-        if (!$user instanceof Member) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Not logged in.');
         }
         $gallery = $galleryRepository->findByUser($user);
@@ -47,6 +49,12 @@ class GalleryCrudController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->security->getUser();
+            if(!$user instanceof User){
+                throw $this->createAccessDeniedException("Must Logged In");
+            }
+            $member = $user->getMember();
+            $gallery->setMember($member);
             $entityManager->persist($gallery);
             $entityManager->flush();
 

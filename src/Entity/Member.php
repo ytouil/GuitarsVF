@@ -2,27 +2,20 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
-#[ORM\Entity(repositoryClass: 'App\Repository\Implementations\MemberRepository')]
+#[ORM\Entity(repositoryClass: 'App\Repository\Implementations\UserRepository')]
 #[ORM\Table(name: 'member')]
-class Member implements UserInterface, PasswordAuthenticatedUserInterface {
+class Member  {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private int $id;
-
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private string $email;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $password;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $full_name;
@@ -33,11 +26,7 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToOne(mappedBy: 'member', targetEntity: Inventory::class, cascade: ['persist'])]
     private $inventory;
 
-    #[ORM\Column(type: 'json')]
-    private array $roles = [];
 
-
-    // Adding the image attribute
     #[Vich\UploadableField(mapping: 'member_images', fileNameProperty: 'imageName')]
     private ?File $image = null;
 
@@ -50,6 +39,11 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'member', targetEntity: Gallery::class)]
     private $galleries;
 
+
+    #[ORM\OneToOne(inversedBy: 'member',targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private $user;
+
     public function __construct()
     {
         $this->galleries = new ArrayCollection();
@@ -61,27 +55,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->id;
     }
 
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-        return $this;
-    }
 
     public function getFullName(): string
     {
@@ -116,7 +89,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    // Getter and Setter for the image attribute
     public function getImage(): ?File
     {
         return $this->image;
@@ -146,22 +118,6 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->galleries;
     }
 
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-        return $this;
-    }
-
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        return array_unique($roles);
-    }
-
-    public function hasRole(string $role): bool
-    {
-        return in_array($role, $this->getRoles(), true);
-    }
 
     public function addGallery(Gallery $gallery): self
     {
@@ -180,23 +136,15 @@ class Member implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function getUserIdentifier(): string
+    public function getUser(): ?User
     {
-        return $this->getUsername();
+        return $this->user;
     }
 
-    public function eraseCredentials()
+    public function setUser(User $user): self
     {
-    }
-
-    public function getSalt()
-    {
-        return null;
-    }
-
-    public function getUsername(): string
-    {
-        return $this->email;
+        $this->user = $user;
+        return $this;
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Repository\Implementations;
 
 use App\Entity\Gallery;
 use App\Entity\Member;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\Interfaces\GalleryRepositoryInterface;
@@ -26,7 +27,7 @@ class GalleryRepository extends ServiceEntityRepository implements GalleryReposi
     }
 
 
-    public function findByUser(Member $user)
+    public function findByUser(User $user)
     {
         return $this->createQueryBuilder('g')
             ->where('g.member = :user')

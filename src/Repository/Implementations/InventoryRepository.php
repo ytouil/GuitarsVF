@@ -3,7 +3,7 @@
 namespace App\Repository\Implementations;
 
 use App\Entity\Inventory;
-use App\Entity\Member;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,7 +29,7 @@ class InventoryRepository extends ServiceEntityRepository implements InventoryRe
     /**
      * @throws NonUniqueResultException
      */
-    public function findByUser(Member $user)
+    public function findByUser(User $user)
     {
         return $this->createQueryBuilder('i')
             ->where('i.member = :user')

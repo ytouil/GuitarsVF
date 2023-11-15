@@ -4,7 +4,7 @@ namespace App\Controller\User;
 
 use App\Entity\Gallery;
 use App\Entity\Guitar;
-use App\Entity\Member;
+use App\Entity\User;
 use App\Form\GuitarType;
 use App\Repository\Interfaces\GalleryRepositoryInterface;
 use App\Repository\Interfaces\GuitarRepositoryInterface;
@@ -30,7 +30,7 @@ class GuitarCrudController extends AbstractController
     public function index(GuitarRepositoryInterface $guitarRepository,GalleryRepositoryInterface $galleryRepo): Response
     {
         $user = $this->security->getUser();
-        if (!$user instanceof Member) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Not logged in.');
         }
         $guitars = $guitarRepository->findByUser($user);
@@ -50,7 +50,7 @@ class GuitarCrudController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->getUser();
-            if (!$user instanceof Member) {
+            if (!$user instanceof User) {
                 throw new \LogicException('User must be authenticated to create a guitar.');
             }
 
@@ -124,7 +124,6 @@ class GuitarCrudController extends AbstractController
 
         $entityManager->persist($guitar);
         $entityManager->flush();
-
 
         return $this->redirectToRoute('app_guitar_index');
     }

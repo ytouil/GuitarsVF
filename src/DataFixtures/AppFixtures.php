@@ -8,128 +8,117 @@ use App\Entity\Guitar;
 use App\Entity\Inventory;
 use App\Entity\Member;
 use App\Entity\Message;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Vich\UploaderBundle\Entity\File;
 
 class AppFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
-    {
-        // Create members
-        $john = $this->createMember('john@example.com', 'John Doe', 'Bio about John', 'App/pictures/Members/john.jpg', '123456');
-        $alice = $this->createMember('alice@example.com', 'Alice Smith', 'Bio about Alice', 'App/pictures/Members/alice.jpg', '123456');
-        
-        $manager->persist($john);
-        $manager->persist($alice);
 
-        // Create Inventories
-        $johnInventory = $this->createInventory('John Inventory', $john, 'App/pictures/Inventories/john_inventory.jpg');
-        $aliceInventory = $this->createInventory('Alice Inventory', $alice, 'App/pictures/Inventories/alice_inventory.jpg');
+public function load(ObjectManager $manager)
+{
+// Create Users
+$johnUser = new User();
+$johnUser->setEmail('john@example.com');
+$johnUser->setPassword(password_hash('123456', PASSWORD_DEFAULT));
+$johnUser->setRoles(['ROLE_ADMIN']);
 
-        $manager->persist($johnInventory);
-        $manager->persist($aliceInventory);
+$aliceUser = new User();
+$aliceUser->setEmail('alice@example.com');
+    $aliceUser->setPassword(password_hash('123456', PASSWORD_DEFAULT));
+$aliceUser->setRoles(['ROLE_USER']);
 
-        // Create Galleries and associate them with Members
-        $johnGallery = $this->createGallery('John Gallery', 'Description about John gallery', ['App/pictures/Guitars/stratocaster.jpg', 'App/pictures/Inventories/john_inventory.jpg'], $john);
-        $aliceGallery = $this->createGallery('Alice Gallery', 'Description about Alice gallery', ['App/pictures/Guitars/telecaster.jpg', 'App/pictures/Inventories/alice_inventory.jpg'], $alice);
+$manager->persist($johnUser);
+$manager->persist($aliceUser);
 
-        $manager->persist($johnGallery);
-        $manager->persist($aliceGallery);
+// Create Members
+$johnMember = new Member();
+$johnMember->setFullName('John Doe');
+$johnMember->setBio('Bio about John');
+$johnMember->setUser($johnUser);
 
-        // Create Guitars
-        $stratocaster = $this->createGuitar('Stratocaster', 'Description about Stratocaster', $johnInventory, $johnGallery, 'App/pictures/Guitars/stratocaster.jpg');
-        $telecaster = $this->createGuitar('Telecaster', 'Description about Telecaster', $aliceInventory, $aliceGallery, 'App/pictures/Guitars/telecaster.jpg');
+$aliceMember = new Member();
+$aliceMember->setFullName('Alice Smith');
+$aliceMember->setBio('Bio about Alice');
+$aliceMember->setUser($aliceUser);
 
-        $manager->persist($stratocaster);
-        $manager->persist($telecaster);
+$manager->persist($johnMember);
+$manager->persist($aliceMember);
 
-        // Create Comments
-        $comment1 = $this->createComment('Great guitar!', new \DateTime(), $stratocaster, $john);
-        $comment2 = $this->createComment('I love this one!', new \DateTime(), $telecaster, $alice);
+// Create Inventory
+$johnInventory = new Inventory();
+$johnInventory->setName('John Inventory');
+$johnInventory->setMember($johnMember);
 
-        $manager->persist($comment1);
-        $manager->persist($comment2);
+$aliceInventory = new Inventory();
+$aliceInventory->setName('Alice Inventory');
+$aliceInventory->setMember($aliceMember);
 
-        // Create Messages
-        $message1 = $this->createMessage('Hello John, your guitar is amazing!', new \DateTime(), $john, $alice);
-        $message2 = $this->createMessage('Thanks Alice, appreciate it!', new \DateTime(), $alice, $john);
+$manager->persist($johnInventory);
+$manager->persist($aliceInventory);
 
-        $manager->persist($message1);
-        $manager->persist($message2);
+// Create Guitar
+$guitar1 = new Guitar();
+$guitar1->setModelName('Stratocaster');
+$guitar1->setDescription('Description about Stratocaster');
+$guitar1->setInventory($johnInventory);
 
-        $manager->flush();
-    }
+$guitar2 = new Guitar();
+$guitar2->setModelName('Telecaster');
+$guitar2->setDescription('Description about Telecaster');
+$guitar2->setInventory($aliceInventory);
 
-    private function createMember(string $email, string $fullName, string $bio, string $imagePath, string $password): Member
-    {
-        $member = new Member();
-        $member->setEmail($email);
-        $member->setFullName($fullName);
-        $member->setBio($bio);
-        $member->setImage($imagePath);
-        $member->setPassword($password);
+$manager->persist($guitar1);
+$manager->persist($guitar2);
 
-        return $member;
-    }
+// Create Gallery
+$johnGallery = new Gallery();
+$johnGallery->setName('John Gallery');
+$johnGallery->setDescription('Gallery belonging to John');
+$johnGallery->setMember($johnMember);
+$johnGallery->addGuitar($guitar1);
 
-    private function createInventory(string $name, Member $member, string $imagePath): Inventory
-    {
-        $inventory = new Inventory();
-        $inventory->setName($name);
-        $inventory->setMember($member);
-        $inventory->setImage($imagePath);
+$aliceGallery = new Gallery();
+$aliceGallery->setName('Alice Gallery');
+$aliceGallery->setDescription('Gallery belonging to Alice');
+$aliceGallery->setMember($aliceMember);
+$aliceGallery->addGuitar($guitar2);
 
-        return $inventory;
-    }
+$manager->persist($johnGallery);
+$manager->persist($aliceGallery);
 
-    private function createGallery(string $name, string $description, array $imagePaths, Member $member): Gallery
-    {
-        $gallery = new Gallery();
-        $gallery->setName($name);
-        $gallery->setDescription($description);
-        foreach ($imagePaths as $path) {
-            $gallery->addImage($path);
-        }
-        $gallery->setMember($member);
+// Create Comment
+$comment1 = new Comment();
+$comment1->setContent('Great guitar, John!');
+$comment1->setTimestamp(new \DateTime());
+$comment1->setGuitar($guitar1);
+$comment1->setMember($johnMember);
 
-        return $gallery;
-    }
+$comment2 = new Comment();
+$comment2->setContent('Nice guitar, Alice!');
+$comment2->setTimestamp(new \DateTime());
+$comment2->setGuitar($guitar2);
+$comment2->setMember($aliceMember);
 
-    private function createGuitar(string $modelName, string $description, Inventory $inventory, Gallery $gallery, string $imagePath): Guitar
-    {
-        $guitar = new Guitar();
-        $guitar->setModelName($modelName);
-        $guitar->setDescription($description);
-        $guitar->setInventory($inventory);
-        $guitar->setGallery($gallery);
-        if (file_exists($imagePath)) {
-            $file = new File($imagePath);
-            $guitar->setImage($file);
-        }
+$manager->persist($comment1);
+$manager->persist($comment2);
 
-        return $guitar;
-    }
+// Create Message
+$message1 = new Message();
+$message1->setContent('Hey John, how are you?');
+$message1->setTimestamp(new \DateTime());
+$message1->setSender($aliceMember);
+$message1->setReceiver($johnMember);
 
-    private function createComment(string $content, \DateTimeInterface $timestamp, Guitar $guitar, Member $member): Comment
-    {
-        $comment = new Comment();
-        $comment->setContent($content);
-        $comment->setTimestamp($timestamp);
-        $comment->setGuitar($guitar);
-        $comment->setMember($member);
+$message2 = new Message();
+$message2->setContent('Hey Alice, I am good!');
+$message2->setTimestamp(new \DateTime());
+$message2->setSender($johnMember);
+$message2->setReceiver($aliceMember);
 
-        return $comment;
-    }
+$manager->persist($message1);
+$manager->persist($message2);
 
-    private function createMessage(string $content, \DateTimeInterface $timestamp, Member $sender, Member $receiver): Message
-    {
-        $message = new Message();
-        $message->setContent($content);
-        $message->setTimestamp($timestamp);
-        $message->setSender($sender);
-        $message->setReceiver($receiver);
-
-        return $message;
-    }
+$manager->flush();
+}
 }

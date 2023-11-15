@@ -1,5 +1,4 @@
 <?php
-// src/Entity/Inventory.php
 
 namespace App\Entity;
 
@@ -26,12 +25,8 @@ class Inventory
     #[Column(type: 'string', length: 255)]
     private string $name;
 
-    // Adding the image attribute
-    #[Column(type: 'string', length: 255, nullable: true)]
-    private ?string $image = null;
-
     #[OneToOne(inversedBy: 'inventory', targetEntity: Member::class)]
-    #[JoinColumn(name: 'member_id', referencedColumnName: 'id')]
+    #[JoinColumn(name: 'member_id', referencedColumnName: 'id', nullable: false)]
     private $member;
 
     #[OneToMany(mappedBy: 'inventory', targetEntity: Guitar::class)]
@@ -68,8 +63,6 @@ class Inventory
         $this->member = $member;
         return $this;
     }
-    
-    
 
     public function getGuitars(): Collection
     {
@@ -95,18 +88,6 @@ class Inventory
             }
         }
 
-        return $this;
-    }
-
-    // Getter and Setter for the image attribute
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): self
-    {
-        $this->image = $image;
         return $this;
     }
 }

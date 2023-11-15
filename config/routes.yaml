@@ -3,10 +3,8 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
 api_login_check:
     path: /api/login
 app_logout:
     path: /admin/logout
-user_profile:
-    path: /profile
-    controller: App\Controller\ProfileController::index

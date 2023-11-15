@@ -28,14 +28,14 @@ class RoleBasedRedirectionListener
         $user = $this->security->getUser();
 
         // Redirect unauthenticated users trying to access restricted areas to the login page
-        if (!$user && preg_match('/^(\/admin|\/dashboard)/', $request->getPathInfo())) {
+        if (!$user && preg_match('/^(\/admin|\/dashboard|\/profile)/', $request->getPathInfo())) {
             $response = new RedirectResponse($this->router->generate('show_login_form'));
             $event->setResponse($response);
         }
 
         // Redirect authenticated users with ROLE_USER trying to access /admin to their profile
        if ($user && $this->security->isGranted('ROLE_USER') && str_starts_with($request->getPathInfo(), '/admin')) {
-            $response = new RedirectResponse($this->router->generate('app_dashboardindex'));
+            $response = new RedirectResponse($this->router->generate('user_profile'));
             $event->setResponse($response);
         }
 

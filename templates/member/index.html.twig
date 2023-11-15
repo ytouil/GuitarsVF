@@ -4,7 +4,7 @@
         <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
             <ul class="space-y-2 font-medium">
                 <li>
-                    <a href="{{ path('member_profil') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <a href="{{ path('user_dashboard') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <i class="fab fa-symfony"></i>
                         <span class="ms-3">Dashboard</span>
                     </a>
@@ -17,6 +17,9 @@
                 <li>
                     <a href="{{ path('app_guitar_index') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <span class="flex-1 ms-3 whitespace-nowrap">Guitars</span>
+                    </a>
+                    <a href="{{ path('app_inv_edit',{'id': app.user.member.id}) }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <span class="flex-1 ms-3 whitespace-nowrap">Inventory</span>
                     </a>
                 </li>
             </ul>
@@ -33,7 +36,7 @@
                                 <div class="sm:flex sm:items-start">
                                     <div class="text-center sm:mt-0 sm:ml-2 sm:text-left">
                                         <h3 class="text-sm leading-6 font-medium text-gray-400">Total Guitars</h3>
-                                        <p class="text-3xl font-bold text-black">{{ app.user.inventory.guitars.count}}</p>
+                                        <p class="text-3xl font-bold text-black">{{ app.user.member.inventory.guitars.count}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -43,7 +46,7 @@
                                 <div class="sm:flex sm:items-start">
                                     <div class="text-center sm:mt-0 sm:ml-2 sm:text-left">
                                         <h3 class="text-sm leading-6 font-medium text-gray-400">Total Galleries</h3>
-                                        <p class="text-3xl font-bold text-black">{{ app.user.galleries.count }}</p>
+                                        <p class="text-3xl font-bold text-black">{{ app.user.member.galleries.count }}</p>
                                     </div>
                                 </div>
                             </div>
