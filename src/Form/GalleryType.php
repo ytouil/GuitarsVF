@@ -15,7 +15,9 @@ class GalleryType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('image', VichImageType::class)
+            ->add('image', VichImageType::class,[
+                'required' => false
+            ])
         ;
     }
 

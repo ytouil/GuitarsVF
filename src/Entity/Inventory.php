@@ -29,7 +29,7 @@ class Inventory
     #[JoinColumn(name: 'member_id', referencedColumnName: 'id', nullable: false)]
     private $member;
 
-    #[OneToMany(mappedBy: 'inventory', targetEntity: Guitar::class)]
+    #[OneToMany(mappedBy: 'inventory', targetEntity: Guitar::class,cascade: ['persist','remove'])]
     private $guitars;
 
     public function __construct()

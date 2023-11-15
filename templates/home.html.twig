@@ -3,21 +3,17 @@
 {% block body %}
  <div class="bg-white">
         <div>
-
-
-
             <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
                     <h1 class="text-4xl font-bold tracking-tight text-gray-900">Guitars</h1>
                 </div>
-
                 <section aria-labelledby="products-heading" class="pb-24 pt-6">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                         {% for guitar in guitars %}
                             {% if guitar.gallery %}
                                 <div class="group relative">
                                     <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                                        <img src="{{ vich_uploader_asset(guitar, 'image') }}" alt="Front of men's Basic Tee in black." class="h-full w-full object-cover object-center lg:h-full lg:w-full">
+                                        <img src="{{ guitar.imageName ?  vich_uploader_asset(guitar, 'image') : asset('assets/images/no-image.png') }}" alt="no-image-product" class="h-full w-full object-cover object-center lg:h-full lg:w-full">
                                     </div>
                                     <div class="mt-4 flex justify-between">
                                         <div>
@@ -30,6 +26,40 @@
                                             <p class="mt-1 text-sm text-gray-500">{{ guitar.inventory.member.fullName }}</p>
                                         </div>
                                         <p class="text-sm font-medium text-gray-900">{{ guitar.gallery.name }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-center text-lg font-bold py-24">No guitars found.</p>
+                        {% endfor %}
+
+                    </div>
+                </section>
+
+                <div class="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
+                    <h1 class="text-4xl font-bold tracking-tight text-gray-900">Galleries</h1>
+                </div>
+                <section aria-labelledby="products-heading" class="pb-24 pt-6">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+                        {% for gallery in galleries %}
+                            {% if gallery %}
+                                <div class="group relative">
+                                    <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                                        <img src="{{ gallery.imageName ?  vich_uploader_asset(gallery, 'image') : asset('assets/images/no-image.png') }}" alt="no-image-product" class="h-full w-full object-cover object-center lg:h-full lg:w-full">
+                                    </div>
+                                    <div class="mt-4 flex justify-between">
+                                        <div class="flex-colomn flex items-center">
+                                                <img class="w-8 h-8 rounded-full mr-2"
+                                                     src="{{ gallery.member.imageName ? vich_uploader_asset(gallery.member, 'image') : asset('assets/images/avarat.webp') }}"
+                                                     alt="user photo">
+                                            <h3 class="text-sm text-gray-700">
+                                                <a href="#">
+                                                    <span aria-hidden="true" class="absolute inset-0"></span>
+                                                    {{ gallery.member.fullName }}
+                                                </a>
+                                            </h3>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900">{{ gallery.name }}</p>
                                     </div>
                                 </div>
                             {% endif %}

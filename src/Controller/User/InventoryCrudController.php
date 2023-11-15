@@ -46,7 +46,7 @@ class InventoryCrudController extends AbstractController{
             return $this->redirectToRoute('user_dashboard', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('member_guitar/edit.html.twig', [
+        return $this->render('member_inv/edit.html.twig', [
             'inv' => $inv,
             'form' => $form,
         ]);

@@ -6,19 +6,28 @@ use App\Entity\Inventory;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Repository\Interfaces\UserRepositoryInterface;
+use App\Service\Interfaces\InventoryServiceInterface;
+use App\Service\Interfaces\MemberServiceInterface;
 use App\Service\Interfaces\UserServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class UserService implements UserServiceInterface
+class UserServiceImpl implements UserServiceInterface
 {
     private $userRepository;
-    private $entityManager;
+
+    private $memberService;
+
+    private $inventoryService;
 
 
-    public function __construct(UserRepositoryInterface $userRepository, EntityManagerInterface $entityManager)
+    public function __construct(
+        UserRepositoryInterface $userRepository,
+        MemberServiceInterface $memberService,
+        InventoryServiceInterface $inventoryService)
     {
         $this->userRepository = $userRepository;
-        $this->entityManager = $entityManager;
+        $this->memberService = $memberService;
+        $this->inventoryService=$inventoryService;
     }
 
 
@@ -40,15 +49,12 @@ class UserService implements UserServiceInterface
         $member = new Member();
         $member->setFullName($data['full_name']);
         $member->setUser($user); // Associate User with Member
-
-
         $member->setInventory($inventory);
         $inventory->setMember($member);
         // Persist entities
-        $this->entityManager->persist($user);
-        $this->entityManager->persist($member);
-        $this->entityManager->persist($inventory);
-        $this->entityManager->flush();
+        $this->userRepository->save($user);
+        $this->memberService->save($member);
+        $this->inventoryService->save($inventory);
 
         return $user;
     }

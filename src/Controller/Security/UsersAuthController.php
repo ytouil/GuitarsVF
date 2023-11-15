@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 
@@ -132,14 +131,6 @@ private function processValidLoginForm($form): Response{
     }
 
 
-private function createSerializationContext(): array {
-    return [
-        AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-            return $object->getId();
-        }
-    ];
-}
-
 private function handleFormErrors($form): Response {
     $errors = array_map(function ($error) {
         return $error->getMessage();
@@ -148,10 +139,6 @@ private function handleFormErrors($form): Response {
     return $this->json(['message' => 'Invalid form data', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
 }
 
-    private function hasAuthorizationHeader(Request $request): bool {
-        $authorizationHeader = $request->headers->get('Authorization');
-        return $authorizationHeader !== null;
-    }
 
 
 

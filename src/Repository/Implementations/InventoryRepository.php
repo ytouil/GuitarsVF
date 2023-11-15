@@ -37,4 +37,18 @@ class InventoryRepository extends ServiceEntityRepository implements InventoryRe
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+
+    public function save(Inventory $inventory) : void
+    {
+        $this->_em->beginTransaction();
+        try {
+            $this->_em->persist($inventory);
+            $this->_em->flush();
+            $this->_em->commit();
+        } catch (\Throwable $e) {
+            $this->_em->rollback();
+            throw new \RuntimeException("Unable to save user data: " . $e->getMessage(), 0, $e);
+        }
+    }
 }

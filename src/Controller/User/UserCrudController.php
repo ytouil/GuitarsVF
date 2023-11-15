@@ -2,7 +2,6 @@
 
 namespace App\Controller\User;
 
-use App\Entity\Member;
 use App\Form\MemberType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

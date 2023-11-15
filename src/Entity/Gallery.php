@@ -22,7 +22,7 @@ class Gallery
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description;
 
-    #[ORM\OneToMany(mappedBy: 'gallery', targetEntity: Guitar::class)]
+    #[ORM\OneToMany(mappedBy: 'gallery', targetEntity: Guitar::class,cascade: ['persist'])]
     private $guitars;
 
     #[Vich\UploadableField(mapping: 'gallery_images', fileNameProperty: 'imageName')]

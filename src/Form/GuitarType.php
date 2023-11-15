@@ -16,7 +16,9 @@ class GuitarType extends AbstractType
         $builder
             ->add('modelName')
             ->add('description')
-            ->add('image', VichImageType::class)
+            ->add('image', VichImageType::class,[
+                'required' => false
+            ])
 
         ;
     }

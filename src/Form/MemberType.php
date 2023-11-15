@@ -17,10 +17,13 @@ class MemberType extends AbstractType
         $builder
             ->add('full_name')
             ->add('bio')
-            ->add('image',VichImageType::class)
+            ->add('image', VichImageType::class,[
+                'required' => false
+            ])
             ->add('email', EmailType::class, [
                 'mapped' => false,
                 'required' => false
+
             ])
         ;
     }

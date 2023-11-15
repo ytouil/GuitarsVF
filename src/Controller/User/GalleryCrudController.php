@@ -3,11 +3,9 @@
 namespace App\Controller\User;
 
 use App\Entity\Gallery;
-use App\Entity\Member;
 use App\Entity\User;
 use App\Form\GalleryType;
 use App\Repository\Interfaces\GalleryRepositoryInterface;
-use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -19,22 +17,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class GalleryCrudController extends AbstractController
 {
     private $security;
+    private $galleryRepository;
 
+    private $entityManager;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security,GalleryRepositoryInterface $galleryRepository,EntityManagerInterface $entityManager)
     {
         $this->security = $security;
+        $this->galleryRepository=$galleryRepository;
+        $this->entityManager=$entityManager;
     }
 
 
     #[Route('/', name: 'app_gallery_index', methods: ['GET'])]
-    public function index(GalleryRepositoryInterface $galleryRepository): Response
+    public function index(): Response
     {
         $user = $this->security->getUser();
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Not logged in.');
         }
-        $gallery = $galleryRepository->findByUser($user);
+        $gallery = $this->galleryRepository->findByUser($user);
 
         return $this->render('member_gallery/index.html.twig', [
             'galleries' => $gallery,
@@ -42,7 +44,7 @@ class GalleryCrudController extends AbstractController
     }
 
     #[Route('/new', name: 'app_gallery_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request): Response
     {
         $gallery = new Gallery();
         $form = $this->createForm(GalleryType::class, $gallery);
@@ -55,8 +57,8 @@ class GalleryCrudController extends AbstractController
             }
             $member = $user->getMember();
             $gallery->setMember($member);
-            $entityManager->persist($gallery);
-            $entityManager->flush();
+            $this->entityManager->persist($gallery);
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -69,13 +71,13 @@ class GalleryCrudController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_gallery_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Gallery $gallery, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Gallery $gallery): Response
     {
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -87,11 +89,11 @@ class GalleryCrudController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_gallery_delete', methods: ['POST'])]
-    public function delete(Request $request, Gallery $gallery, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Gallery $gallery): Response
     {
         if ($this->isCsrfTokenValid('delete'.$gallery->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($gallery);
-            $entityManager->flush();
+            $this->entityManager->remove($gallery);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);

@@ -11,4 +11,6 @@ interface InventoryRepositoryInterface
     public function findAll();
 
     public function findByUser(User $user);
+
+    public function save(Inventory $inventory);
 }

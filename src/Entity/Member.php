@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,7 +22,7 @@ class Member  {
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $bio;
 
-    #[ORM\OneToOne(mappedBy: 'member', targetEntity: Inventory::class, cascade: ['persist'])]
+    #[ORM\OneToOne(mappedBy: 'member', targetEntity: Inventory::class, cascade: ['persist','remove'])]
     private $inventory;
 
 
@@ -36,11 +35,11 @@ class Member  {
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'member', targetEntity: Gallery::class)]
+    #[ORM\OneToMany(mappedBy: 'member', targetEntity: Gallery::class,cascade: ['persist','remove'])]
     private $galleries;
 
 
-    #[ORM\OneToOne(inversedBy: 'member',targetEntity: User::class)]
+    #[ORM\OneToOne(inversedBy: 'member',targetEntity: User::class,cascade: ['persist','remove'])]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private $user;
 

@@ -26,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
 
-    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Member::class, cascade: ['persist'])]
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Member::class, cascade: ['persist','remove'])]
     private $member;
 
 

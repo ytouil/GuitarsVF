@@ -4,19 +4,18 @@ namespace App\Repository\Implementations;
 
 use App\Entity\Member;
 use App\Entity\User;
-use App\Entity\Inventory;
-use App\Repository\Interfaces\UserRepositoryInterface;
+use App\Repository\Interfaces\MemberRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
+class MemberRepository extends ServiceEntityRepository implements MemberRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, User::class);
+        parent::__construct($registry, Member::class);
     }
 
-    public function find($id, $lockMode = null, $lockVersion = null): ?User
+    public function find($id, $lockMode = null, $lockVersion = null): ?Member
     {
         // Assuming you're simply returning the result without additional logic
         return parent::find($id, $lockMode, $lockVersion);
@@ -24,14 +23,13 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
 
     public function findAll(): array
     {
-        // Assuming you're simply returning the result without additional logic
         return parent::findAll();
     }
-    public function save(User $user): void
+    public function save(Member $member): void
     {
         $this->_em->beginTransaction();
         try {
-            $this->_em->persist($user);
+            $this->_em->persist($member);
             $this->_em->flush();
             $this->_em->commit();
         } catch (\Throwable $e) {
@@ -41,7 +39,7 @@ class UserRepository extends ServiceEntityRepository implements UserRepositoryIn
     }
 
 
-    public function findByEmail(string $email): ?User
+    public function findByEmail(string $email): ?Member
     {
         return $this->findOneBy(['email' => $email]);
     }

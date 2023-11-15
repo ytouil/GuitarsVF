@@ -20,21 +20,30 @@ use Symfony\Component\Routing\Annotation\Route;
 class GuitarCrudController extends AbstractController
 {
     private $security;
-    public function __construct(Security $security)
+    private $guitarRepository;
+    private $galleryRepo;
+    private $entityManager;
+
+    private $inventoryRepo;
+
+    public function __construct(InventoryRepositoryInterface $inventoryRepo,Security $security,GuitarRepositoryInterface $guitarRepository,GalleryRepositoryInterface $galleryRepo,EntityManagerInterface $entityManager)
     {
         $this->security = $security;
-
+        $this->guitarRepository=$guitarRepository;
+        $this->galleryRepo=$galleryRepo;
+        $this->entityManager=$entityManager;
+        $this->inventoryRepo=$inventoryRepo;
     }
 
     #[Route('/', name: 'app_guitar_index', methods: ['GET'])]
-    public function index(GuitarRepositoryInterface $guitarRepository,GalleryRepositoryInterface $galleryRepo): Response
+    public function index(): Response
     {
         $user = $this->security->getUser();
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Not logged in.');
         }
-        $guitars = $guitarRepository->findByUser($user);
-        $gallery = $galleryRepo->findByUser($user);
+        $guitars = $this->guitarRepository->findByUser($user);
+        $gallery = $this->galleryRepo->findByUser($user);
         return $this->render('member_guitar/index.html.twig', [
             'guitars' => $guitars,
             'galleries' => $gallery,
@@ -42,7 +51,7 @@ class GuitarCrudController extends AbstractController
     }
 
     #[Route('/new', name: 'app_guitar_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,InventoryRepositoryInterface $inv): Response
+    public function new(Request $request): Response
     {
         $guitar = new Guitar();
         $form = $this->createForm(GuitarType::class, $guitar);
@@ -54,14 +63,14 @@ class GuitarCrudController extends AbstractController
                 throw new \LogicException('User must be authenticated to create a guitar.');
             }
 
-            $inventory = $inv->findByUser($user);
+            $inventory = $this->inventoryRepo->findByUser($user);
             if (!$inventory) {
                 throw new \LogicException('Inventory Not Found');
             } else {
                 $guitar->setInventory($inventory);
             }
-            $entityManager->persist($guitar);
-            $entityManager->flush();
+            $this->entityManager->persist($guitar);
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('app_guitar_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -73,13 +82,13 @@ class GuitarCrudController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_guitar_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Guitar $guitar, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Guitar $guitar): Response
     {
         $form = $this->createForm(GuitarType::class, $guitar);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('app_guitar_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -91,20 +100,20 @@ class GuitarCrudController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_guitar_delete', methods: ['POST'])]
-    public function delete(Request $request, Guitar $guitar, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Guitar $guitar): Response
     {
         if ($this->isCsrfTokenValid('delete'.$guitar->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($guitar);
-            $entityManager->flush();
+            $this->entityManager->remove($guitar);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_guitar_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/add-guitar/{id}', name: 'add_guitar_to_gallery', methods: ['POST'])]
-    public function addGuitarToGallery(Request $request,int $id, EntityManagerInterface $entityManager): Response
+    public function addGuitarToGallery(Request $request,int $id): Response
     {
-        $guitar = $entityManager->getRepository(Guitar::class)->find($id);
+        $guitar = $this->entityManager->getRepository(Guitar::class)->find($id);
 
         if (!$guitar) {
             throw $this->createNotFoundException('Guitar not found.');
@@ -113,7 +122,7 @@ class GuitarCrudController extends AbstractController
         $galleryId = $request->request->get('galleryId');
 
         if ($galleryId) {
-            $gallery = $entityManager->getRepository(Gallery::class)->find($galleryId);
+            $gallery = $this->entityManager->getRepository(Gallery::class)->find($galleryId);
             if (!$gallery) {
                 throw $this->createNotFoundException('Gallery not found.');
             }
@@ -122,8 +131,8 @@ class GuitarCrudController extends AbstractController
             $guitar->setGallery(null);
         }
 
-        $entityManager->persist($guitar);
-        $entityManager->flush();
+        $this->entityManager->persist($guitar);
+        $this->entityManager->flush();
 
         return $this->redirectToRoute('app_guitar_index');
     }

@@ -10,4 +10,5 @@ interface UserServiceInterface
 
     public function authenticateMember(string $email, string $plainPassword): ?User;
 
+
 }
